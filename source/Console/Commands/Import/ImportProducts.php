@@ -44,5 +44,7 @@ class ImportProducts extends Command
         $importedData = (ReaderFactory::make($file))->read();
 
         $mapper->map($importedData);
+
+        $output->writeln("<bg=green;options=bold>Successfully imported products from {$file}!</>");
     }
 }
