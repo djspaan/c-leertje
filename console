@@ -8,4 +8,9 @@ use App\Console\Commands\Import\ImportProducts;
 
 $app = new Application();
 $app -> add(new ImportProducts());
-$app->run();
+
+try {
+    $app->run();
+} catch (Exception $e) {
+    //
+}
