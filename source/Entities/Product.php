@@ -195,23 +195,22 @@ class Product
         $this->categoryId = $categoryId;
     }
 
-    public function getVATId(): int
+    public function getVatId(): int
     {
-        return $this->VATId;
+        return $this->vatId;
     }
 
-    public function setVATId(int $VATId): void
+    public function setVatId(int $VATId): void
     {
-        $this->VATId = $VATId;
+        $this->vatId = $VATId;
     }
 
-    // TODO: Add type hinting for availableSince.
-    public function getAvailableSince()
+    public function getAvailableSince(): \DateTime
     {
         return $this->availableSince;
     }
 
-    public function setAvailableSince($availableSince): void
+    public function setAvailableSince(\DateTime $availableSince): void
     {
         $this->availableSince = $availableSince;
     }
