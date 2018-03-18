@@ -6,6 +6,8 @@
  **/
 class Product
 {
+    const PRICE_MULTIPLIER = 1.15;
+
     /** @Id @Column(name="Id", type="integer") @GeneratedValue * */
     protected $id;
 
@@ -103,7 +105,7 @@ class Product
 
     public function setPrice(float $price): void
     {
-        $this->price = $price;
+        $this->price = $price * self::PRICE_MULTIPLIER;
     }
 
     public function getShortDescription(): string
