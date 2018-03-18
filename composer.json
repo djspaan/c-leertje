@@ -5,6 +5,7 @@
     }
   },
   "require": {
-    "symfony/console": "^4.0"
+    "symfony/console": "^4.0",
+    "doctrine/orm": "^2.6"
   }
 }
