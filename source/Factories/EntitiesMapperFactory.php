@@ -5,7 +5,7 @@ use Importer\Mappers\EntitiesMapper;
 use Importer\Mappers\IEntitiesMapper;
 use Importer\Mappers\IEntityMapper;
 
-class EntitiesMapperFactory
+class EntitiesMapperFactory implements IEntitiesMapperFactory
 {
     public static function make(EntityManagerInterface $entityManager, IEntityMapper $entityMapper): IEntitiesMapper
     {

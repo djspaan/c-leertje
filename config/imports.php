@@ -12,8 +12,7 @@ return [
           'ShortDescription' => 'shortDescription',
           'FullDescription' => 'fullDescription',
           'Brand' => 'brand',
-          'Model' => 'model',
-          'VAT' => 'vatId'
+          'Model' => 'model'
       ]
   ]
 ];

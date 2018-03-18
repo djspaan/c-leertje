@@ -1,8 +1,8 @@
 <?php namespace Importer\Factories;
 
-use Importer\Readers\IReader;
+use Importer\Readers\IFileReader;
 
 interface IReaderFactory
 {
-    public static function make(string $file): IReader;
+    public static function make(string $file): IFileReader;
 }

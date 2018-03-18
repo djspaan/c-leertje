@@ -45,6 +45,7 @@ class Product
     /** @Column(name="CategoryId", type="integer", length=11) * */
     protected $categoryId = 1;
 
+    // TODO: Define VAT relation
     /** @Column(name="VATId", type="integer", length=11) * */
     protected $vatId;
 

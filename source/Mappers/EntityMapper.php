@@ -1,6 +1,7 @@
 <?php namespace Importer\Mappers;
 
-use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface;
+use Importer\Client;
 
 class EntityMapper implements IEntityMapper
 {
@@ -8,50 +9,22 @@ class EntityMapper implements IEntityMapper
 
     protected $entityManager;
 
-    public function __construct(string $entity, EntityManager $entityManager)
+    public function __construct(string $entity, EntityManagerInterface $entityManager)
     {
         $this->entity = $entity;
         $this->entityManager = $entityManager;
     }
 
-    protected function getEntityImportConfig()
+    public function map(array $importedAttributes)
     {
-        $config = include(__DIR__ . '/../../config/imports.php');
+        $config = Client::getConfig('imports')[$this->entity]['attributes'];
 
-        return $config[$this->entity]['attributes'];
-    }
-
-    protected function getSetterFromProperty(string $property): string
-    {
-        $pascalCaseProperty = strtoupper($property[0]) . substr($property, 1);
-
-        return 'set' . $pascalCaseProperty;
-    }
-
-    protected function getEntityObject(array $attributes)
-    {
-        $config = include(__DIR__ . '/../../config/imports.php');
-
-        $uniqueColumn = $config[$this->entity]['uniqueColumn'];
-
-        $uniqueProperty = $config[$this->entity]['attributes'][$uniqueColumn];
-
-        $entityObject = $this->entityManager->getRepository($this->entity)
-                ->findOneBy([$uniqueProperty => $attributes[$uniqueColumn]]) ?? new $this->entity();
-
-        return $entityObject;
-    }
-
-    public function map(array $attributes)
-    {
-        $config = $this->getEntityImportConfig();
-
-        $entity = $this->getEntityObject($attributes);
+        $entity = $this->getEntityObject($importedAttributes);
 
         foreach ($config as $column => $property) {
             $setter = $this->getSetterFromProperty($property);
-            if (method_exists($entity, $setter) && array_key_exists($column, $attributes)) {
-                $entity->$setter($attributes[$column]);
+            if (method_exists($entity, $setter) && array_key_exists($column, $importedAttributes)) {
+                $entity->$setter($importedAttributes[$column]);
             }
         }
 
@@ -66,5 +39,26 @@ class EntityMapper implements IEntityMapper
     public function setEntity($entity)
     {
         $this->entity = $entity;
+    }
+
+    protected function getSetterFromProperty(string $camelCaseProperty): string
+    {
+        $pascalCaseProperty = strtoupper($camelCaseProperty[0]) . substr($camelCaseProperty, 1);
+
+        return 'set' . $pascalCaseProperty;
+    }
+
+    protected function getEntityObject(array $attributes)
+    {
+        $config = Client::getConfig('imports');
+
+        $uniqueColumn = $config[$this->entity]['uniqueColumn'];
+
+        $uniqueProperty = $config[$this->entity]['attributes'][$uniqueColumn];
+
+        $entityObject = $this->entityManager->getRepository($this->entity)
+                ->findOneBy([$uniqueProperty => $attributes[$uniqueColumn]]) ?? new $this->entity();
+
+        return $entityObject;
     }
 }

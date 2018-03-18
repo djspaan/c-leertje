@@ -1,9 +1,6 @@
-<?php namespace Importer\Readers\SpreadSheet;
+<?php namespace Importer\Readers;
 
-use Importer\Readers\IImportedData;
-use Importer\Readers\IReader;
-
-abstract class SpreadsheetReader implements IReader
+abstract class FileReader implements IFileReader
 {
     protected $file;
 
@@ -18,6 +15,4 @@ abstract class SpreadsheetReader implements IReader
     {
         return $this->file;
     }
-
-
 }

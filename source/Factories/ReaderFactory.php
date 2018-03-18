@@ -1,12 +1,12 @@
 <?php namespace Importer\Factories;
 
 use Importer\Exceptions\NoReaderForFileType;
-use Importer\Readers\IReader;
+use Importer\Readers\IFileReader;
 use Importer\Readers\SpreadSheet\Types\CSV\CSVReader;
 
 class ReaderFactory implements IReaderFactory
 {
-    public static function make(string $file): IReader
+    public static function make(string $file): IFileReader
     {
         $extension = pathinfo($file, PATHINFO_EXTENSION);
 

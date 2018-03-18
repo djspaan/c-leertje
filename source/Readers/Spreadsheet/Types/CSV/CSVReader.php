@@ -2,14 +2,13 @@
 
 use Importer\Readers\IImportedData;
 use Importer\Readers\SpreadSheet\Data\SpreadsheetData;
-use Importer\Readers\SpreadSheet\SpreadsheetReader;
+use Importer\Readers\FileReader;
 use SplFileObject;
 
-class CSVReader extends SpreadsheetReader
+class CSVReader extends FileReader
 {
     const COLUMN_DELIMITER = ';';
 
-    // TODO: Check if the file has a header and instantiate spreadsheet data object accordingly.
     public function read(): IImportedData
     {
         $file = $this->getFileObject();

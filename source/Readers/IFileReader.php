@@ -1,6 +1,6 @@
 <?php namespace Importer\Readers;
 
-interface IReader
+interface IFileReader
 {
     public function read(): IImportedData;
 
