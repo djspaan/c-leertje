@@ -1,60 +1,69 @@
-<?php namespace App\Entities;
+<?php namespace Importer\Entities;
 
 /**
  * @Entity @Table(name="Product")
+ * @HasLifecycleCallbacks
  **/
 class Product
 {
-    /** @Id @Column(type="integer") @GeneratedValue * */
+    /** @Id @Column(name="Id", type="integer") @GeneratedValue * */
     protected $id;
 
-    /** @Column(type="integer", length=11) * */
-    protected $storeId;
+    /** @Column(name="StoreId", type="integer", length=11) * */
+    protected $storeId = 1;
 
-    /** @Column(type="string") * */
+    /** @Column(name="Name", type="string") * */
     protected $name;
 
-    /** @Column(type="double") * */
+    /** @Column(name="Price", type="float") * */
     protected $price;
 
-    /** @Column(type="string", length="256") * */
+    /** @Column(name="ShortDescription", type="string", length=256) * */
     protected $shortDescription;
 
-    /** @Column(type="text", length="1000") * */
-    protected $longDescription;
+    /** @Column(name="FullDescription", type="text") * */
+    protected $fullDescription;
 
-    /** @Column(type="text", length="1000") * */
+    /** @Column(name="MetaDescription", type="text", length=1000) * */
     protected $metaDescription;
 
-    /** @Column(type="text", length="1000") * */
-    protected $supplier;
+    /** @Column(name="Supplier", type="text", length=1000) * */
+    protected $supplier = 'Schoeisel BV';
 
-    /** @Column(type="text", length="1000") * */
+    /** @Column(name="Brand", type="text", length=1000) * */
     protected $brand;
 
-    /** @Column(type="text", length="1000") * */
+    /** @Column(name="Model", type="text", length=1000) * */
     protected $model;
 
-    /** @Column(type="integer", length=11) * */
-    protected $imageId;
+    /** @Column(name="ImageId", type="integer", length=11) * */
+    protected $imageId = 34;
 
-    /** @Column(type="integer", length=11) * */
-    protected $thumbnailId;
+    /** @Column(name="ThumbnailId", type="integer", length=11) * */
+    protected $thumbnailId = 87;
 
-    /** @Column(type="integer", length=11) * */
-    protected $categoryId;
+    /** @Column(name="CategoryId", type="integer", length=11) * */
+    protected $categoryId = 1;
 
-    /** @Column(type="integer", length=11) * */
-    protected $VATId;
+    /** @Column(name="VATId", type="integer", length=11) * */
+    protected $vatId;
 
-    /** @Column(type="datetime") * */
+    /** @Column(name="AvailableSince", type="datetime") * */
     protected $availableSince;
 
-    /** @Column(type="string", length="50") * */
+    /** @Column(name="Sku", type="string", length=50) * */
     protected $sku;
 
-    /** @Column(type="integer", length=11) * */
+    /** @Column(name="Percentage", type="integer", length=11) * */
     protected $percentage;
+
+    /**
+     * @PrePersist
+     */
+    public function onPrePersistSetAvailableSince(): void
+    {
+        $this->availableSince = new \DateTime();
+    }
 
     public function getId(): int
     {
@@ -106,14 +115,14 @@ class Product
         $this->shortDescription = $shortDescription;
     }
 
-    public function getLongDescription(): string
+    public function getFullDescription(): string
     {
-        return $this->longDescription;
+        return $this->fullDescription;
     }
 
-    public function setLongDescription(string $longDescription): void
+    public function setFullDescription(string $fullDescription): void
     {
-        $this->longDescription = $longDescription;
+        $this->fullDescription = $fullDescription;
     }
 
     public function getMetaDescription(): string

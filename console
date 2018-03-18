@@ -4,7 +4,7 @@
 require_once __DIR__ . '/bootstrap.php';
 
 use Symfony\Component\Console\Application;
-use App\Console\Commands\Import\ImportProducts;
+use Importer\Console\Commands\Import\ImportProducts;
 
 $app = new Application();
 $app->add(new ImportProducts());

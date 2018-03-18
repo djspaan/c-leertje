@@ -4,13 +4,12 @@ require_once 'vendor/autoload.php';
 
 use Doctrine\ORM\Tools\Setup;
 use Doctrine\ORM\EntityManager;
+use Importer\Client;
 
 $dbParams = include('config/database.php');
 
 $config = Setup::createAnnotationMetadataConfiguration(['/Entities'], true);
 
-try {
-    $entityManager = EntityManager::create($dbParams, $config);
-} catch (\Doctrine\ORM\ORMException $e) {
-    // TODO
-}
+$entityManager = EntityManager::create($dbParams, $config);
+
+Client::setEntityManager($entityManager);
