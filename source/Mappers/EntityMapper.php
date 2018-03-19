@@ -1,26 +1,30 @@
 <?php namespace Importer\Mappers;
 
 use Doctrine\ORM\EntityManagerInterface;
-use Importer\Client;
+use Importer\IClient;
 
 class EntityMapper implements IEntityMapper
 {
-    protected $entity;
+    private $client;
 
-    protected $entityManager;
+    private $entityClass;
 
-    public function __construct(string $entity, EntityManagerInterface $entityManager)
+    private $entityManager;
+
+    public function __construct(IClient $client, string $entityClass, EntityManagerInterface $entityManager)
     {
-        $this->entity = $entity;
+        $this->client = $client;
+        $this->entityClass = $entityClass;
         $this->entityManager = $entityManager;
     }
 
     public function map(array $importedAttributes)
     {
-        $config = Client::getConfig('imports')[$this->entity]['attributes'];
+        $config = $this->client->getConfig('imports.php')[$this->entityClass]['attributes'];
 
         $entity = $this->getEntityObject($importedAttributes);
 
+        // TODO: Factory gebruiken
         foreach ($config as $column => $property) {
             $setter = $this->getSetterFromProperty($property);
             if (method_exists($entity, $setter) && array_key_exists($column, $importedAttributes)) {
@@ -31,14 +35,14 @@ class EntityMapper implements IEntityMapper
         return $entity;
     }
 
-    public function getEntity()
+    public function getEntityClass()
     {
-        return $this->entity;
+        return $this->entityClass;
     }
 
-    public function setEntity($entity)
+    public function setEntityClass($entityClass)
     {
-        $this->entity = $entity;
+        $this->entityClass = $entityClass;
     }
 
     protected function getSetterFromProperty(string $camelCaseProperty): string
@@ -50,14 +54,14 @@ class EntityMapper implements IEntityMapper
 
     protected function getEntityObject(array $attributes)
     {
-        $config = Client::getConfig('imports');
+        $config = $this->client->getConfig('imports.php');
 
-        $uniqueColumn = $config[$this->entity]['uniqueColumn'];
+        $uniqueColumn = $config[$this->entityClass]['uniqueColumn'];
 
-        $uniqueProperty = $config[$this->entity]['attributes'][$uniqueColumn];
+        $uniqueProperty = $config[$this->entityClass]['attributes'][$uniqueColumn];
 
-        $entityObject = $this->entityManager->getRepository($this->entity)
-                ->findOneBy([$uniqueProperty => $attributes[$uniqueColumn]]) ?? new $this->entity();
+        $entityObject = $this->entityManager->getRepository($this->entityClass)
+                ->findOneBy([$uniqueProperty => $attributes[$uniqueColumn]]) ?? new $this->entityClass();
 
         return $entityObject;
     }

@@ -1,47 +1,45 @@
 <?php
 
-use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManagerInterface as IEntityManager;
 use Importer\Entities\Product;
-use Importer\Mappers\EntityMapper;
+use Importer\Mappers\EntitiesMapper;
 use Importer\Mappers\IEntityMapper;
 use Importer\Readers\IImportedData;
 use PHPUnit\Framework\TestCase;
 
 class EntitiesMapperTest extends TestCase
 {
-    public function _testMap()
+    private $entityManager;
+
+    private $entityMapper;
+
+    private $importedData;
+
+    private $entity;
+
+    private $subject;
+
+    public function setUp()/* The :void return type declaration that should be here would cause a BC issue */
     {
-        $entityManagerMock = $this->createMock(EntityManager::class);
+        parent::setUp();
 
-        $entityMapperStub = $this->createMock(IEntityMapper::class);
+        $this->entityManager = $this->createMock(IEntityManager::class);
+        $this->entityMapper = $this->createMock(IEntityMapper::class);
+        $this->importedData = $importedData = $this->createMock(IImportedData::class);
+        $this->entity = $this->createMock(Product::class);
+        $this->subject = new EntitiesMapper($this->entityManager, $this->entityMapper);
+    }
 
-        $expectedEntityObject = new Product();
-        $expectedEntityObject->setSku(1234);
-        $expectedEntityObject->setName('Testname');
-        $expectedEntityObject->setPrice(10.1);
-        $expectedEntityObject->setShortDescription('This is a short test description.');
-        $expectedEntityObject->setFullDescription('This is a full test description.');
-        $expectedEntityObject->setBrand('TestBrand');
-        $expectedEntityObject->setModel('TestModel');
+    public function testMap()
+    {
+        $this->importedData->expects($this->once())->method('getItems')->will($this->returnValue([['Sku' => '1234']]));
 
-        $entityMapperStub->expects($this->any())->method('map')->will($this->returnValue($expectedEntityObject));
+        $this->entityMapper->expects($this->once())->method('map')->with($this->equalTo(['Sku' => '1234']))->will($this->returnValue($this->entity));
 
-        $entitiesMapper = new \Importer\Mappers\EntitiesMapper($entityManagerMock, $entityMapperStub);
+        $this->entityManager->expects($this->once())->method('merge')->with($this->equalTo($this->entity));
 
-        $importedDataStub = $this->createMock(IImportedData::class);
+        $this->entityManager->expects($this->once())->method('flush');
 
-        $importedDataStub->expects($this->any())->method('getItems')->willReturnArgument([
-            'Sku' => 1234,
-            'Name' => 'Testname',
-            'PrIce' => 'Testprice',
-            'ShortDescription' => 'This is a short test description.',
-            'FullDescription' => 'This is a full test description.',
-            'Brand' => 'TestBrand',
-            'Model' => 'TestModel'
-        ]);
-
-        $entitiesMapper->map($importedDataStub);
-
-        // TODO HENRY: Expect entityManagerMock to receive merge and flush calls.
+        $this->subject->map($this->importedData);
     }
 }

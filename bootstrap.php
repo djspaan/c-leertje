@@ -12,4 +12,4 @@ $config = Setup::createAnnotationMetadataConfiguration(['/Entities'], true);
 
 $entityManager = EntityManager::create($dbParams, $config);
 
-Client::setEntityManager($entityManager);
+Client::getInstance()->setEntityManager($entityManager);

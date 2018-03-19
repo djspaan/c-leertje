@@ -1,13 +1,20 @@
 <?php namespace Importer\Readers\SpreadSheet\Types\CSV;
 
+use Importer\Readers\IFileReader;
 use Importer\Readers\IImportedData;
 use Importer\Readers\SpreadSheet\Data\SpreadsheetData;
-use Importer\Readers\FileReader;
 use SplFileObject;
 
-class CSVReader extends FileReader
+class CSVReader implements IFileReader
 {
     const COLUMN_DELIMITER = ';';
+
+    private $filePath;
+
+    public function __construct(string $filePath)
+    {
+        $this->filePath = $filePath;
+    }
 
     public function read(): IImportedData
     {
@@ -17,12 +24,12 @@ class CSVReader extends FileReader
 
         $header = array_shift($rows);
 
-        return (new SpreadsheetData())->setHeader($header)->setRows($rows);
+        return new SpreadsheetData($header, $rows);
     }
 
     private function getFileObject(): SplFileObject
     {
-        $file = new SplFileObject($this->file);
+        $file = new SplFileObject($this->filePath);
 
         $file->setFlags(SplFileObject::READ_CSV);
 

@@ -1,42 +1,61 @@
 <?php
 
+use Doctrine\Common\Persistence\ObjectRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Importer\Entities\Product;
+use Importer\IClient;
 use Importer\Mappers\EntityMapper;
 use PHPUnit\Framework\TestCase;
 
 class EntityMapperTest extends TestCase
 {
-    public function _testMap()
+    private $client;
+
+    private $entityManager;
+
+    private $repository;
+
+    private $subject;
+
+    private $config = [
+        'Importer\Entities\Product' =>  [
+            'uniqueColumn' => 'Sku',
+            'attributes' => [
+                'Sku' => 'sku',
+                'Name' => 'name',
+                'PrIce' => 'price',
+                'ShortDescription' => 'shortDescription',
+                'FullDescription' => 'fullDescription',
+                'Brand' => 'brand',
+                'Model' => 'model'
+            ]
+        ]
+    ];
+
+    public function setUp()
     {
-        // TODO HENRY: Hoe hier Client singleton vervangen
+        parent::setUp();
 
-        // TODO HENRY: Hoe protected functie getEntityObject testen?
+        $this->client = $this->createMock(IClient::class);
+        $this->entityManager = $this->createMock(EntityManagerInterface::class);
+        $this->repository = $this->createMock(ObjectRepository::class);
+        $this->subject = new EntityMapper($this->client, Product::class, $this->entityManager);
+    }
 
-        $entityManagerMock = $this->createMock(\Doctrine\ORM\EntityManager::class, ['getRepository']);
+    public function testMap()
+    {
+        $this->client->expects($this->any())->method('getConfig')->with($this->equalTo('imports.php'))->will($this->returnValue($this->config));
 
-        $entityManagerMock->expects($this->once())->method('getRepository')->with($this->equalTo(Product::class))->will($this->returnValue(null));
+        $this->entityManager->expects($this->once())->method('getRepository')->with($this->equalTo(Product::class))->will($this->returnValue($this->repository));
 
-        $entityMapper = new EntityMapper(Product::class, $entityManagerMock);
+        $this->repository->expects($this->once())->method('findOneBy')->with($this->equalTo(['sku' => '1234']))->will($this->returnValue(null));
 
-        $actualEntityObject = $entityMapper->map([
-            'Sku' => 1234,
-            'Name' => 'Testname',
-            'PrIce' => 'Testprice',
-            'ShortDescription' => 'This is a short test description.',
-            'FullDescription' => 'This is a full test description.',
-            'Brand' => 'TestBrand',
-            'Model' => 'TestModel'
-        ]);
+        $actualProduct = $this->subject->map(['Sku' => '1234']);
 
-        $expectedEntityObject = new Product();
-        $expectedEntityObject->setSku(1234);
-        $expectedEntityObject->setName('Testname');
-        $expectedEntityObject->setPrice('Testprice');
-        $expectedEntityObject->setShortDescription('This is a short test description.');
-        $expectedEntityObject->setFullDescription('This is a full test description.');
-        $expectedEntityObject->setBrand('TestBrand');
-        $expectedEntityObject->setModel('TestModel');
+        $expectedProduct = new Product();
 
-        $this->assertEquals('setTestProperty', $actualEntityObject);
+        $expectedProduct->setSku('1234');
+
+        $this->assertEquals($expectedProduct, $actualProduct);
     }
 }

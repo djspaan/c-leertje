@@ -6,15 +6,15 @@ use Importer\Readers\SpreadSheet\Types\CSV\CSVReader;
 
 class ReaderFactory implements IReaderFactory
 {
-    public static function make(string $file): IFileReader
+    public static function make(string $filePath): IFileReader
     {
-        $extension = pathinfo($file, PATHINFO_EXTENSION);
+        $fileExtension = pathinfo($filePath, PATHINFO_EXTENSION);
 
-        switch ($extension) {
+        switch ($fileExtension) {
             case 'csv':
-                return new CSVReader($file);
+                return new CSVReader($filePath);
             default:
-                throw new NoReaderForFileType($extension);
+                throw new NoReaderForFileType($fileExtension);
         }
     }
 }

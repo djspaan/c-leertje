@@ -11,9 +11,9 @@ class ClientTest extends TestCase
 
         $entityManagerMock = $this->createMock(\Doctrine\ORM\EntityManagerInterface::class);
 
-        $client::setEntityManager($entityManagerMock);
+        $client->setEntityManager($entityManagerMock);
 
-        $this->assertInstanceOf(\Doctrine\ORM\EntityManagerInterface::class, $client::getEntityManager());
+        $this->assertInstanceOf(\Doctrine\ORM\EntityManagerInterface::class, $client->getEntityManager());
     }
 
     public function testGetInstance()

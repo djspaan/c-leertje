@@ -7,11 +7,11 @@ class SpreadsheetDataTest extends TestCase
 {
     public function testGetItems()
     {
-        $spreadsheetData = new SpreadsheetData();
+        $header = ['TestColumn1', 'TestColumn2', 'TestColumn3'];
 
-        $spreadsheetData->setHeader(['TestColumn1', 'TestColumn2', 'TestColumn3']);
+        $rows = [['123', 'aaa', '']];
 
-        $spreadsheetData->setRows([['123', 'aaa', '']]);
+        $spreadsheetData = new SpreadsheetData($header, $rows);
 
         $expected = [['TestColumn1' => '123', 'TestColumn2' => 'aaa', 'TestColumn3' => '']];
 

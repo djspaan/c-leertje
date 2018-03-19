@@ -2,30 +2,24 @@
 
 class SpreadsheetData implements ISpreadsheetData
 {
-    protected $header;
+    private $header;
 
-    protected $rows;
+    private $rows;
+
+    public function __construct(array $header, array $rows)
+    {
+        $this->header = $header;
+        $this->rows = $rows;
+    }
 
     public function getHeader(): array
     {
         return $this->header;
     }
 
-    public function setHeader(array $header): ISpreadsheetData
-    {
-        $this->header = $header;
-        return $this;
-    }
-
     public function getRows(): array
     {
         return $this->rows;
-    }
-
-    public function setRows(array $rows): ISpreadsheetData
-    {
-        $this->rows = $rows;
-        return $this;
     }
 
     public function getItems(): array

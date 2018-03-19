@@ -3,5 +3,4 @@
 interface IFileReader
 {
     public function read(): IImportedData;
-
 }

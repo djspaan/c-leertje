@@ -40,7 +40,6 @@ class ImportProducts extends Command
 
         $mapper = EntitiesMapperFactory::make($entityManager, $entityMapper);
 
-        // TODO HENRY: Error opvangen en zo ja, hoe?
         $importedData = (ReaderFactory::make($file))->read();
 
         $mapper->map($importedData);
