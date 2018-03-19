@@ -6,9 +6,18 @@ use PHPUnit\Framework\TestCase;
 
 class ReaderFactoryTest extends TestCase
 {
+    private $subject;
+
+    public function setUp()
+    {
+        parent::setUp();
+
+        $this->subject = ReaderFactory::class;
+    }
+
     public function testIfMakeReturnsTheCorrectFactory()
     {
-        $reader = ReaderFactory::make('test.csv');
+        $reader = $this->subject::make('test.csv');
 
         $this->assertInstanceOf(CSVReader::class, $reader);
     }
@@ -17,6 +26,6 @@ class ReaderFactoryTest extends TestCase
     {
         $this->expectException(\Importer\Exceptions\NoReaderForFileType::class);
 
-        $reader = ReaderFactory::make('test.xslx');
+        $this->subject::make('test.xslx');
     }
 }

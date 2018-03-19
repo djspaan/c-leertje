@@ -1,7 +1,7 @@
 <?php
 
-use Doctrine\Common\Persistence\ObjectRepository;
-use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\Common\Persistence\ObjectRepository as IObjectRepository;
+use Doctrine\ORM\EntityManagerInterface as IEntityManager;
 use Importer\Entities\Product;
 use Importer\IClient;
 use Importer\Mappers\EntityMapper;
@@ -37,14 +37,16 @@ class EntityMapperTest extends TestCase
         parent::setUp();
 
         $this->client = $this->createMock(IClient::class);
-        $this->entityManager = $this->createMock(EntityManagerInterface::class);
-        $this->repository = $this->createMock(ObjectRepository::class);
-        $this->subject = new EntityMapper($this->client, Product::class, $this->entityManager);
+        $this->entityManager = $this->createMock(IEntityManager::class);
+        $this->repository = $this->createMock(IObjectRepository::class);
+        $this->subject = new EntityMapper($this->client, Product::class);
     }
 
     public function testMap()
     {
         $this->client->expects($this->any())->method('getConfig')->with($this->equalTo('imports.php'))->will($this->returnValue($this->config));
+
+        $this->client->expects($this->once())->method('getEntityManager')->will($this->returnValue($this->entityManager));
 
         $this->entityManager->expects($this->once())->method('getRepository')->with($this->equalTo(Product::class))->will($this->returnValue($this->repository));
 

@@ -1,24 +1,35 @@
 <?php
 
+use Doctrine\ORM\EntityManagerInterface as IEntityManager;
 use Importer\Client;
 use PHPUnit\Framework\TestCase;
 
 class ClientTest extends TestCase
 {
+    private $entityManager;
+
+    private $subject;
+
+    public function setUp()
+    {
+        parent::setUp();
+
+        $this->entityManager = $this->createMock(IEntityManager::class);
+        $this->subject = Client::class;
+    }
+
     public function testSetAndGetEntityManager()
     {
-        $client = Client::getInstance();
+        $client = $this->subject::getInstance();
 
-        $entityManagerMock = $this->createMock(\Doctrine\ORM\EntityManagerInterface::class);
+        $client->setEntityManager($this->entityManager);
 
-        $client->setEntityManager($entityManagerMock);
-
-        $this->assertInstanceOf(\Doctrine\ORM\EntityManagerInterface::class, $client->getEntityManager());
+        $this->assertInstanceOf(IEntityManager::class, $client->getEntityManager());
     }
 
     public function testGetInstance()
     {
-        $client = Client::getInstance();
+        $client = $this->subject::getInstance();
 
         $this->assertInstanceOf(Client::class, $client);
     }

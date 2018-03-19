@@ -1,6 +1,5 @@
 <?php namespace Importer\Mappers;
 
-use Doctrine\ORM\EntityManagerInterface;
 use Importer\IClient;
 
 class EntityMapper implements IEntityMapper
@@ -11,11 +10,10 @@ class EntityMapper implements IEntityMapper
 
     private $entityManager;
 
-    public function __construct(IClient $client, string $entityClass, EntityManagerInterface $entityManager)
+    public function __construct(IClient $client, string $entityClass)
     {
         $this->client = $client;
         $this->entityClass = $entityClass;
-        $this->entityManager = $entityManager;
     }
 
     public function map(array $importedAttributes)
@@ -60,7 +58,7 @@ class EntityMapper implements IEntityMapper
 
         $uniqueProperty = $config[$this->entityClass]['attributes'][$uniqueColumn];
 
-        $entityObject = $this->entityManager->getRepository($this->entityClass)
+        $entityObject = $this->client->getEntityManager()->getRepository($this->entityClass)
                 ->findOneBy([$uniqueProperty => $attributes[$uniqueColumn]]) ?? new $this->entityClass();
 
         return $entityObject;

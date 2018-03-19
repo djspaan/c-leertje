@@ -30,13 +30,15 @@ class ImportProducts extends Command
 
     public function execute(InputInterface $input, OutputInterface $output): void
     {
-        // TODO: Validation for file
+        // TODO: Validation for file + test for this function
 
         $file = $input->getArgument(self::FILE_ARGUMENT);
 
-        $entityManager = Client::getEntityManager();
+        $client = Client::getInstance();
 
-        $entityMapper = new EntityMapper(Product::class, $entityManager);
+        $entityManager = $client->getEntityManager();
+
+        $entityMapper = new EntityMapper($client, Product::class);
 
         $mapper = EntitiesMapperFactory::make($entityManager, $entityMapper);
 

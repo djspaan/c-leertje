@@ -1,6 +1,6 @@
 <?php namespace Importer\Mappers;
 
-use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\EntityManagerInterface as IEntityManager;
 use Importer\Readers\IImportedData;
 
 class EntitiesMapper implements IEntitiesMapper
@@ -9,7 +9,7 @@ class EntitiesMapper implements IEntitiesMapper
 
     protected $entityMapper;
 
-    public function __construct(EntityManagerInterface $entityManager, IEntityMapper $entityMapper)
+    public function __construct(IEntityManager $entityManager, IEntityMapper $entityMapper)
     {
         $this->entityManager = $entityManager;
         $this->entityMapper = $entityMapper;
